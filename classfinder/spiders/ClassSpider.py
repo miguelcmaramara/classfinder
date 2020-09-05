@@ -9,9 +9,12 @@ class ClassSpider(scrapy.Spider):
         yield scrapy.Request(url, self.parse)
 
     def parse(self, response):
-        for quote in response.css('div.quote'):
-        yield {
-            'className': response.css('h3::text').getall(),
-            'preReq': response.css('p:nth-child(3)::text').getall(),
-        }
+        for course in response.css('div.course'):
+            yield {
+                'className': course.css('h3::text').getall(),
+                'desc': course.css('h3+ p::text').getall(),
+                'preReq': course.css('p:nth-child(3)::text').getall(),
+                'test': course.css('p:nth-child(4)::text').getall(),
+                'credits': course.css('p:nth-child(5)::text').getall(),
+            }
 
