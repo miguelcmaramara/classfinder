@@ -14,14 +14,14 @@ courses = {}
 #   Structure --------------------------
 #   courses:
 #       CRS###
-#           id : CRS###
-#           name : "course of courses!"
-#           number : ###
-#           desc : 
+#           >id : CRS###
+#           >name : "course of courses!"
+#           >number : ###
+#           >desc : 
 #           SBC 
-#           coreq
-#           prereq
-#           credits
+#           >coreq
+#           >prereq
+#           >credits
 
 
 # REGEX ---------------------------------------
@@ -34,8 +34,8 @@ reICredits = "(\d(-\d)?).*"
 reOCredits = r"\1"
 
 reICoReq = r".*[Cc]o-?requisites?:?\s?(.*)"
-reOCoReq = r"\1"
 
+reIPreReq = r".*Prerequisites?:?\s?(.*)"
 # Loop to enact
 for rawCourse in data:
     courseId = re.sub(reIClass,reOClass,rawCourse["className"][0])
@@ -47,35 +47,38 @@ for rawCourse in data:
     except:
         courseCredits = "Unavailable"
 
+    # Use find to find the "corequisite"/"prerequisite" word -> if the classes exist thereafter,
+    # it processes it. If not, it waits for the next line
     courseCoReq = ''
-    nl = False
+    coursePreReq = ''
+    nlco = False
+    nlpre = False
     print(courseId)
     for extra in rawCourse["extras"]:    #Coreq
         courseCoReqArr=re.findall(reICoReq, extra)
+        coursePreReqArr=re.findall(reIPreReq, extra)
 
-        if nl:      # See if the REGEX was caught, but the classes were not in the same line
+        if nlco:      # See if the REGEX was caught, but the classes were not in the same line
             courseCoReq = extra
-            nl = False
-
+            nlco = False
         try:        # Primes reading the next line if classes not caught
             courseCoReq = courseCoReqArr[0]
             if courseCoReq == '':
-                nl = True
+                nlco = True
         except:
             pass
 
+        if nlpre:      # See if the REGEX was caught, but the classes were not in the same line
+            coursePreReq = extra
+            nlpre = False
+        try:        # Primes reading the next line if classes not caught
+            coursePreReq = coursePreReqArr[0]
+            if coursePreReq == '':
+                nlpre = True
+        except:
+            pass
 
-        # courseCoReq=re.split(reICoReq, extra)
-        # courseCoReq=re.sub(reICoReq, reOCoReq, extra)
-
-    # courseCoReq=[] #unblock me after you try a sub
-    # for extra in rawCourse["extras"]:    #Coreq
-        # courseCoReqObj = re.search(reICoReq, extra)
-        # try:
-            # if courseCoReqObj.span() = 
-        # except:
-            # pass
-
+    
     
     courses[courseId] = {
             "id" : courseId,
@@ -83,12 +86,16 @@ for rawCourse in data:
             "name" : courseName,
             "credits" : courseCredits,
             "desc" : rawCourse["desc"][0],
-            "coReq" : courseCoReq
+            "coReq" : courseCoReq,
+            "preReq" : coursePreReq,
+            "SBC" : sbc
             }
 
 # pp.pprint(courses)
 for name, course in courses.items():
     print("------------------")
     print(name)
-    print(course["credits"])
     print(course["coReq"])
+    print(course["preReq"])
+
+
