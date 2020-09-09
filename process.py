@@ -1,11 +1,9 @@
 import json
 import re
-import pprint
-pp = pprint.PrettyPrinter()
 
 # class tree
 data = {}
-with open("classfinder/spiders/raw_courses.json") as file:
+with open("classfinder/spiders/CSE_raw_courses.json") as file:
    data = json.load(file) 
 
 # pp.pprint(data)
@@ -153,7 +151,8 @@ for name, course in courses.items():
     print(course["SBC"])
     print("credits")
     print(course["credits"])
-out_file = open("myfile.json", "w") 
+
+out_file = open("CSEmyfile.json", "w") 
 
 json.dump(courses,out_file,indent =4)
 out_file.close()

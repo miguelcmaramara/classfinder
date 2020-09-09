@@ -4,7 +4,8 @@ class ClassSpider(scrapy.Spider):
     name = "ClassSpider"
 
     def start_requests(self):
-        url = 'https://www.stonybrook.edu/sb/bulletin/current/academicprograms/mec/courses.php'
+        url = 'https://www.stonybrook.edu/sb/bulletin/current/academicprograms/cse/courses.php'
+        # url = 'https://www.stonybrook.edu/sb/bulletin/current/academicprograms/mec/courses.php'
         
         yield scrapy.Request(url, self.parse)
 
